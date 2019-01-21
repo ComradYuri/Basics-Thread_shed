@@ -105,5 +105,74 @@ green&white;,;09/15/17,   Gail Phelps   ;,;$30.52
 ;,; green&white&blue   ;,; 09/15/17 , Myrtle Morris 
 ;,;   $22.66   ;,; green&white&blue;,;09/15/17"""
 
-#------------------------------------------------
+
 # Start coding below!
+# each entry is separated by "," and each sale data point is separated by ";,;"
+# This replaces ";,;" by "?" so that the sales can be split as they then are the only "," in the data string
+daily_sales_replaced = daily_sales.replace(";,;", "?")
+# creates a list with every sale
+daily_transactions = daily_sales_replaced.split(",")
+print(daily_transactions)
+daily_transactions_split = []
+# creates a list within a list and separates data points such as customer name, sales amount, and color
+for entry in daily_transactions:
+    daily_transactions_split += entry.split("?")
+print(daily_transactions_split)
+transactions_clean = []
+# strips data clean
+for entry in daily_transactions_split:
+    transactions_clean.append(entry.strip(" ").strip("\n"))
+print(transactions_clean)
+customers = []
+sales = []
+thread_sold = []
+# creates a list with all customer names, sales, and thread sold
+for i in range(len(transactions_clean)):
+    if i % 4 == 0:
+        customers.append(transactions_clean[i])
+    elif (i-1) % 4 == 0:
+        sales.append(transactions_clean[i])
+    elif (i-2) % 4 == 0:
+        thread_sold.append(transactions_clean[i])
+print(customers)
+print(sales)
+print(thread_sold)
+
+unrounded_total_sales = 0
+# strips "$" of sales entries, converts to float, adds up and rounds it to two decimal places
+for sale in sales:
+    stripped_sale = sale.strip("$")
+    float_sale = float(stripped_sale)
+    unrounded_total_sales += float_sale
+total_sales = round(unrounded_total_sales, 2)
+print(total_sales)
+
+# splits entry of two colors into two entries if needed
+thread_sold_split = []
+for thread in thread_sold:
+    thread = thread.strip()
+    if thread.find("&") <= 0:
+        thread_sold_split.append(thread)
+    elif thread.find('&') > 0:
+        splitted_sale = thread.split("&")
+        for individual_sale in splitted_sale:
+            thread_sold_split.append(individual_sale)
+print(thread_sold_split)
+
+
+# counts how many colors with parameter color are in thread_sold_split
+def color_count(colours):
+    counter = 0
+    for entries in thread_sold_split:
+        if colours == entries:
+            counter += 1
+    return counter
+
+
+print(color_count("white"))
+# list of all colors sold
+colors = ['red', 'yellow', 'green', 'white', 'black', 'blue', 'purple']
+
+# prints how many of each color was sold
+for color in colors:
+    print("There are {} threads sold with the colour {}".format(color_count(color), color))
